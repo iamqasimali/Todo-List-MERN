@@ -5,12 +5,16 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    findUser,
+    getAllUsers
   } = require("../controllers/userController");
 
 
-route.get("/createUser", createUser);
+route.post("/createUser", createUser);
 route.get("/updateUser", updateUser);
-route.get("/deleteUser", deleteUser);
-
+route.delete("/deleteUser", deleteUser);
+route.get("/findUser", findUser);
+route.get("/getAllUsers", getAllUsers);
+route.patch("/updateUser", updateUser);
 
 module.exports = route;
