@@ -1,23 +1,38 @@
-const userModel = require("../models/userModel");
-const { hash } = require("bcryptjs");
+const taskModel = require("../models/taskModel");
 const { v4: uuid } = require("uuid");
 
 module.exports = {
-  createUser: async (body) => {
+  // Index
+  getAllTasks: async () => {
     try {
-      body.password = await hash(body.password, 10);
-      body.userID = uuid();
-      const user = await userModel.createUser(body);
-
+      const user = await taskModel.index();
       if (user.error) {
         return {
           error: user.error,
         };
       }
 
-      delete user.response.dataValues.password;
       return {
         response: user.response,
+      };
+    } catch (error) {
+      return { error: error };
+    }
+  },
+
+  createTask: async (body) => {
+    try {
+      body.taskID = uuid();
+      const task = await taskModel.createTask(body);
+
+      if (task.error) {
+        return {
+          error: task.error,
+        };
+      }
+
+      return {
+        response: task.response,
       };
     } catch (error) {
       console.log("Error in Service", error);
@@ -26,9 +41,10 @@ module.exports = {
       };
     }
   },
+
   findUser: async (userId) => {
     try {
-      const user = await userModel.findUser(userId);
+      const user = await taskModel.findUser(userId);
       console.log("User found", user);
 
       if (user.error) {
@@ -45,27 +61,10 @@ module.exports = {
       return { error: error };
     }
   },
-  getAllUsers: async () => {
-    try {
-      const user = await userModel.getAllUsers();
-
-      if (user.error) {
-        return {
-          error: user.error,
-        };
-      }
-
-      return {
-        response: user.response,
-      };
-    } catch (error) {
-      return { error: error };
-    }
-  },
 
   deleteUser: async ({ id }) => {
     try {
-      const deleteUser = await userModel.deleteUser(id);
+      const deleteUser = await taskModel.deleteUser(id);
 
       if (deleteUser.error || !deleteUser.response) {
         return {
@@ -89,7 +88,7 @@ module.exports = {
 
   updteUser: async (body) => {
     try {
-      const updateUser = await userModel.updateUser(body);
+      const updateUser = await taskModel.updateUser(body);
       console.log(updateUser.response[0]);
       if (updateUser.error || !updateUser.response[0]) {
         return {

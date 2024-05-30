@@ -1,38 +1,37 @@
-const userService = require("../services/userService");
+const taskService = require("../services/taskService");
 const joi = require("joi");
 
-const createUserSchema = joi.object().keys({
-  userName: joi.string().min(3).max(34).required(),
-  firstName: joi.string().min(3).max(34).required(),
-  lastName: joi.string().min(3).max(34).required(),
-  password: joi.string().min(3).max(34).required(),
+const createTaskSchema = joi.object().keys({
+  userID: joi.string().length(36).required(),
+  title: joi.string().min(3).max(255).required(),
+  description: joi.string().min(3).max(1000).required(),
 });
 
-const updateUserSchema = joi.object().keys({
-  userId: joi.string().length(36).required(),
-  userName: joi.string().min(3).max(34),
-  firstName: joi.string().min(3).max(34).required(),
-  lastName: joi.string().min(3).max(34).required(),
-});
+// const updateUserSchema = joi.object().keys({
+//   userId: joi.string().length(36).required(),
+//   userName: joi.string().min(3).max(34),
+//   firstName: joi.string().min(3).max(34).required(),
+//   lastName: joi.string().min(3).max(34).required(),
+// });
 
-const findUserSchema = joi.object().keys({
-  userId: joi.array().single().required(),
-});
+// const findUserSchema = joi.object().keys({
+//   userId: joi.array().single().required(),
+// });
 
 module.exports = {
-  createUser: async (req, res) => {
+  createTask: async (req, res) => {
     try {
-      const validate = await createUserSchema.validateAsync(req.body);
-      const user = await userService.createUser(validate);
+      const validate = await createTaskSchema.validateAsync(req.body);
+      const task = await taskService.createTask(validate);
 
-      if (user.error) {
+      if (task.error) {
         return res.send({
-          error: user.error,
+          error: task.error,
         });
       }
 
       return res.send({
-        response: user.response,
+        response: task.response,
       });
     } catch (error) {
       return res.send({
@@ -63,7 +62,7 @@ module.exports = {
     }
   },
 
-  findUser: async (req, res) => {
+  findTask: async (req, res) => {
     try {
       const validate = await findUserSchema.validateAsync(req.query);
       console.log(validate.userId);
@@ -84,18 +83,18 @@ module.exports = {
       });
     }
   },
-  getAllUsers: async (req, res) => {
+  getAllTasks: async (req, res) => {
     try {
-      const users = await userService.getAllUsers();
+      const tasks = await taskService.getAllTasks();
 
-      if (users.error) {
+      if (tasks.error) {
         return res.send({
-          error: users.error,
+          error: tasks.error,
         });
       }
 
       return res.send({
-        response: users.response,
+        response: tasks.response,
       });
     } catch (error) {
       return res.send({

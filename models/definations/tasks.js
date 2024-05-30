@@ -12,6 +12,21 @@ tasks.init(
       primaryKey: true,
       type: DataTypes.STRING(255),
     },
+    title: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING(1000),
+    },
+    userID: {
+      allowNull: false,
+      type: DataTypes.STRING(255),
+      references:{
+        model: "users",
+        key: "userID"
+      }
+    }
   },
   {
     timestamps: true,

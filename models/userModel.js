@@ -23,13 +23,13 @@ module.exports = {
           where: {
             userID: userId,
           },
-        },
+        }
       );
       return {
         response: user,
       };
     } catch (error) {
-      console.log("Model Error: ", error)
+      console.log("Model Error: ", error);
       return {
         error: error,
       };
@@ -44,7 +44,7 @@ module.exports = {
         response: user,
       };
     } catch (error) {
-      console.log("Model Error:" , error)
+      console.log("Model Error:", error);
       return {
         error: error,
       };
