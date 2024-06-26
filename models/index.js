@@ -11,7 +11,7 @@ const models = { users, tasks, products, sessions };
 users.hasMany(tasks, { foreignKey: "userID" });
 tasks.belongsTo(users, { foreignKey: "userID" });
 
-users.hasMany(sessions, { foreignKey: "userID" });
+users.hasOne(sessions, { foreignKey: "userID" });
 sessions.belongsTo(users, { foreignKey: "userID" });
 
 const db = {};

@@ -1,34 +1,52 @@
-const bcrypt = require("bcryptjs")
-const saltRounds = 10
+require("dotenv").config();
 
-const encryptPassword = (password) => {
-        bcrypt
-        .genSalt(saltRounds)
-        .then(salt => {
-            console.log('Salt: ', salt)
-            return bcrypt.hash(password, salt)
-        })
-        .then(hash => {
-            console.log('Hash: ', hash)
-        })
-        .catch(err => console.error(err.message))
-}
+const userModel = require("../models/userModel");
+const { compare } = require("bcryptjs");
+const { sign } = require("jsonwebtoken");
 
-// const encryptPassword = async(password) => {
-//     await bcrypt.genSalt(saltRounds, (err, salt) => {
-//       if (err) {
-//         console.error(err.message);
-//       } else {
-//         bcrypt.hash(password, salt, (err, hash) => {
-//           if (err) {
-//             console.error(err.message);
-//           } else {
-//             return hash
-//             // console.log('Hashed password:', hash);
-//           } 
-//         });
-//       }
-//     });
-//   };
+module.exports = {
+  login: async (body) => {
+    try {
+      const isUser = await userModel.getUser(body.userName);
+      if (isUser.error || !isUser.response) {
+        return {
+          error: {
+            error: isUser?.error || isUser.response,
+            message: "User Not Found!",
+          },
+        };
+      }
+      const isValid = await compare(
+        body.password,
+        isUser.response.dataValues.password
+      );
 
-module.exports = [encryptPassword]
+      if (!isValid) {
+        return {
+          response: {
+            token: "undefined",
+            message: "invalid credentials",
+          },
+        };
+      }
+
+      delete isUser.response.dataValues.password;
+      const token = sign(isUser.response.dataValues, process.env.SECRET, {
+        expiresIn: 30,
+      });
+
+      //store in session table
+
+      return {
+        response: {
+          token: token,
+          message: "loggen in successfully!",
+        },
+      };
+    } catch (error) {
+      return {
+        error: error,
+      };
+    }
+  },
+};

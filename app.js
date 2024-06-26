@@ -9,6 +9,8 @@ var logger = require('morgan');
 var userRouter = require('./routes/userRouter');
 var authRouter = require('./routes/authRouter');
 var taskRouter = require('./routes/taskRouter');
+var sessionRouter = require('./routes/sessionRouter');
+
 
 //  ======== IMPORTING UPTO HERE ========
 
@@ -27,6 +29,7 @@ app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
 app.use("/task", taskRouter);
+app.use("/session", sessionRouter);
 
 
 // catch 404 and forward to error handler
