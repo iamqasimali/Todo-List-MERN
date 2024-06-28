@@ -51,6 +51,20 @@ module.exports = {
     }
   },
 
+  findByUserName: async (userName) => {
+    try {
+      const user = await models.users.findOne({ where: { userName: userName } });
+      return {
+        response: user,
+      };
+    } catch (error) {
+      console.log("Model Error:", error);
+      return {
+        error: error,
+      };
+    }
+  },
+
   deleteUser: async (userId) => {
     try {
       const user = await models.users.destroy({ where: { userID: userId } });

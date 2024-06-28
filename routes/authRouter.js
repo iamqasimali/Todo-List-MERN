@@ -1,16 +1,14 @@
 const route = require('express').Router();
 
-
 const {
     login,
     logout,
-    restPassword,
+    resetPassword,
 } = require("../controllers/authController")
 
 
 route.post("/login", login);
 route.delete("/logout", logout);
-route.patch("/restPassword", restPassword);
-
+route.patch("/restPassword", resetPassword);
 
 module.exports = route;

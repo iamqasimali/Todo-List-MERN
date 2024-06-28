@@ -1,13 +1,12 @@
 require("dotenv").config();
-
-const userModel = require("../models/userModel");
+const userModel = require("../models/userModel")
 const { compare } = require("bcryptjs");
 const { sign } = require("jsonwebtoken");
 
 module.exports = {
   login: async (body) => {
     try {
-      const isUser = await userModel.getUser(body.userName);
+      const isUser = await userModel.findByUserName(body.userName);
       if (isUser.error || !isUser.response) {
         return {
           error: {
@@ -16,6 +15,7 @@ module.exports = {
           },
         };
       }
+
       const isValid = await compare(
         body.password,
         isUser.response.dataValues.password
