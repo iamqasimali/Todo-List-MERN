@@ -83,6 +83,7 @@ module.exports = {
       });
     }
   },
+  
   getAllTasks: async (req, res) => {
     try {
       const tasks = await taskService.getAllTasks();

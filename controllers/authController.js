@@ -1,66 +1,47 @@
 const joi = require("joi");
-const [encryptPassword] = require("../services/authService");
+const authService = require("../services/authService");
 
 const loginSchema = joi.object().keys({
-  email: joi.string().email().required(),
-  password: joi.string().min(6).max(30).required(),
-});
-
-const logoutSchema = joi.object().keys({
-  id: joi.number().required(),
-});
-
-const restPasswordSchema = joi.object().keys({
-  email: joi.string().email().required(),
-  password: joi.string().min(6).max(30).required(),
-  confirm_password: joi.ref("password"),
+  userName: joi.string().required(),
+  password: joi.string().min(6).max(18).required(),
 });
 
 module.exports = {
   login: async (req, res) => {
     try {
       const validate = await loginSchema.validateAsync(req.body);
-      var password = await encryptPassword(validate.password);
-      console.log("Password is: ", password);
+      const login = await authService.login(validate);
+
+      if (login.error) {
+        return res.send({
+          error: login.error,
+        });
+      }
+
+      res.cookie("auth", login.response.token, {
+        maxAge: 30000,
+      });
       return res.send({
-        message: "This is signin API",
-        data: validate,
+        response: login.response,
       });
     } catch (error) {
       return res.send({
-        message: "This is signin API",
-        data: error.message,
+        message: error.message,
       });
     }
   },
 
-  logout: async (req, res) => {
-    try {
-      const validate = await logoutSchema.validateAsync(req.body);
-      return res.send({
-        message: "This is Logout API",
-        data: validate,
-      });
-    } catch (error) {
-      return res.send({
-        message: "This is Logout API",
-        data: error.message,
-      });
-    }
+  logout: (req, res) => {
+    console.log(req.body);
+    return res.send({
+      message: "logout Api",
+      data: req.body,
+    });
   },
 
-  restPassword: async (req, res) => {
-    try {
-      const validate = await restPasswordSchema.validateAsync(req.body);
-      return res.send({
-        message: "This is signin API",
-        data: validate,
-      });
-    } catch (error) {
-      return res.send({
-        message: "This is signin API",
-        data: error.message,
-      });
-    }
+  resetPassword: (req, res) => {
+    return res.send({
+      message: "reset password Api",
+    });
   },
 };
